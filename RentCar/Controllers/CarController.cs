@@ -62,6 +62,15 @@ namespace RentCar.Controllers
         }
 
         [Authorize]
+        [Route("/api/car/image/{id}")]
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(int id, [FromForm] IFormFile image)
+        {
+
+            return Ok(carService.UploadImage(id, image));
+        }
+
+        [Authorize]
         [Route("/api/car/{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

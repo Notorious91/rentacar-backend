@@ -10,12 +10,12 @@ using RentCar.Service;
 
 namespace RentCar.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : DefaultController
     {
-
+        [Authorize]
         [Route("/api/user/all")]
         [HttpGet]
         public PageResponse<User> GetAll([FromQuery(Name = "page")] int page, [FromQuery(Name = "perPage")] int perPage, [FromQuery(Name = "search")] string search)
@@ -24,6 +24,7 @@ namespace RentCar.Controllers
             return userService.GetPage(new PageModel(page, perPage, search));
         }
 
+        [Authorize]
         [Route("/api/user/current")]
         [HttpGet]
         public async Task<IActionResult> GetCurrent()

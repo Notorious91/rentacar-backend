@@ -1,7 +1,9 @@
-﻿using RentCar.Model;
+﻿using Microsoft.AspNetCore.Http;
+using RentCar.Model;
 using RentCar.Repository;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +11,42 @@ namespace RentCar.Service
 {
     public class PartService
     {
+        public Part UploadImage(int id, IFormFile image)
+        {
+            Part part = null;
+
+            try
+            {
+                using (var unitOfWork = new UnitOfWork(new RentCarContext()))
+                {
+                    part = unitOfWork.Parts.Get(id);
+                    unitOfWork.Parts.Update(part);
+
+                    part.DateUpdated = DateTime.Now;
+
+                    if (image.Length > 0)
+                    {
+                        byte[] p1 = null;
+                        using (var fs1 = image.OpenReadStream())
+                        using (var ms1 = new MemoryStream())
+                        {
+                            fs1.CopyTo(ms1);
+                            p1 = ms1.ToArray();
+                        }
+
+                        part.Image = p1;
+                    }
+
+                    unitOfWork.Complete();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+            return part;
+        }
         public Part Add(Part part)
         {
             if (part == null)
